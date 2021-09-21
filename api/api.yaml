@@ -1,0 +1,611 @@
+swagger: '2.0'
+info:
+  description: Hackernews project of group 12E of ASW
+  version: 1.0.0
+  title: Jeikernius REST API
+  license:
+    name: Apache 2.0
+    url: 'http://www.apache.org/licenses/LICENSE-2.0'
+host: pure-reaches-73463.herokuapp.com
+basePath: /
+tags:
+  - name: Comments
+    description: Comments Rest Controller
+  - name: Lists
+    description: Main Rest Controller
+  - name: User
+    description: User Rest Controller
+paths:
+  /api/ask:
+    get:
+      tags:
+        - Lists
+      summary: 'Retrieves contributions of type ASK sorted by points, the highest are first'
+      operationId: askUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: false
+          type: integer
+          default: 0
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponseOfContributionRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/item:
+    get:
+      tags:
+        - Comments
+      summary: 'Retrieves a contribution by itemid. If the itemid does not exist, an empty json is returned'
+      operationId: getItemUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: itemid
+          in: query
+          description: itemid
+          required: false
+          type: integer
+          default: 0
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ContributionRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+    put:
+      tags:
+        - Comments
+      summary: Creates an item
+      operationId: createItemUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - in: body
+          name: contribution
+          description: contribution
+          required: true
+          schema:
+            $ref: '#/definitions/ContributionForm'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ContributionRestOutput'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/item/comment:
+    put:
+      tags:
+        - Comments
+      summary: Creates a comment in a contribution
+      operationId: createCommentUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - in: body
+          name: comment
+          description: comment
+          required: true
+          schema:
+            $ref: '#/definitions/CommentRest'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ContributionRestOutput'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  '/api/item/{id}/like':
+    post:
+      tags:
+        - Comments
+      summary: Upvote a contribution of any kind
+      operationId: voteUsingPOST
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ContributionRestOutput'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+    delete:
+      tags:
+        - Comments
+      summary: Unvote a contribution of any kind
+      operationId: unvoteUsingDELETE
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: id
+          in: path
+          description: id
+          required: true
+          type: integer
+          format: int64
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ContributionRestOutput'
+        '204':
+          description: No Content
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/main:
+    get:
+      tags:
+        - Lists
+      summary: Retrieves the main contributions regardless of what is their type
+      operationId: indexUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: false
+          type: integer
+          default: 0
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponseOfContributionRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/newest:
+    get:
+      tags:
+        - Lists
+      summary: 'Retrieves contributions regardless of what is their type sorted by creation date in desc order, the newest are first'
+      operationId: newestUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: false
+          type: integer
+          default: 0
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponseOfContributionRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/submissions:
+    get:
+      tags:
+        - Lists
+      summary: Retrieves contributions of type URL or ASK of a given user
+      operationId: submissionsUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: user
+          in: query
+          description: user
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponseOfContributionRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/threads:
+    get:
+      tags:
+        - Lists
+      summary: Retrieves contributions comments or reply of a given user
+      operationId: threadsUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: false
+          type: integer
+          default: 0
+          format: int32
+        - name: user
+          in: query
+          description: user
+          required: false
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponseOfContributionRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/upVotedComments:
+    get:
+      tags:
+        - Lists
+      summary: Retrieves contributions that are comments or replies voted by the user
+      operationId: upVotedCommentsUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: false
+          type: integer
+          default: 0
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponseOfContributionRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/upVotedSubmissions:
+    get:
+      tags:
+        - Lists
+      summary: Retrieves contributions voted by the user
+      operationId: upVotedSubmissionsUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: false
+          type: integer
+          default: 0
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponseOfContributionRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/urls:
+    get:
+      tags:
+        - Lists
+      summary: 'Retrieves contributions of type URL sorted by points, the highest are first'
+      operationId: urlsUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: page
+          in: query
+          description: page
+          required: false
+          type: integer
+          default: 0
+          format: int32
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/PageListResponseOfContributionRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  /api/user:
+    put:
+      tags:
+        - User
+      summary: Updates all the profile values provided in the form
+      operationId: updateUserUsingPUT
+      consumes:
+        - application/json
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - in: body
+          name: userProfileForm
+          description: userProfileForm
+          required: true
+          schema:
+            $ref: '#/definitions/ProfileUpdateRestInput'
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserRestOutput'
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+  '/api/user/{idUser}':
+    get:
+      tags:
+        - User
+      summary: 'Retrieves the user profile from a userid, if the userid is equal to the current user, it shows their profile, in the other case it shows the profile of the user provided'
+      operationId: getUserUsingGET
+      produces:
+        - '*/*'
+        - application/json
+      parameters:
+        - name: idUser
+          in: path
+          description: idUser
+          required: true
+          type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/UserRestOutput'
+        '401':
+          description: Unauthorized
+        '403':
+          description: Forbidden
+        '404':
+          description: Not Found
+      security:
+        - UserToken: []
+      deprecated: false
+securityDefinitions:
+  UserToken:
+    type: apiKey
+    name: Authorization
+    in: header
+definitions:
+  CommentRest:
+    type: object
+    properties:
+      parentId:
+        type: integer
+        format: int64
+      text:
+        type: string
+    title: CommentRest
+  ContributionForm:
+    type: object
+    properties:
+      text:
+        type: string
+      title:
+        type: string
+      url:
+        type: string
+    title: ContributionForm
+  ContributionRestOutput:
+    type: object
+    required:
+      - content
+      - createdAt
+      - id
+      - points
+      - user
+    properties:
+      comments:
+        type: array
+        description: 'List of comments related to the contribution, it is a list of ContributionRestOutput'
+        items:
+          $ref: '#/definitions/ContributionRestOutput'
+      content:
+        type: string
+        description: 'The content of the contribution, it can be an URL or a simple text'
+      createdAt:
+        type: integer
+        format: int64
+        description: The timestamp in ms of the contribution creation date
+      id:
+        type: integer
+        format: int64
+        description: The id of the contribution
+      points:
+        type: string
+        description: The likes the contribution has
+      title:
+        type: string
+        description: The title if the contribution
+      user:
+        type: string
+        description: The id of the user that created the contribution
+    title: ContributionRestOutput
+  PageListResponseOfContributionRestOutput:
+    type: object
+    properties:
+      hasNextPage:
+        type: boolean
+      items:
+        type: array
+        items:
+          $ref: '#/definitions/ContributionRestOutput'
+      page:
+        type: integer
+        format: int32
+      pageCount:
+        type: integer
+        format: int32
+    title: PageListResponseOfContributionRestOutput
+  ProfileUpdateRestInput:
+    type: object
+    properties:
+      about:
+        type: string
+      delay:
+        type: integer
+        format: int32
+      maxv:
+        type: integer
+        format: int32
+      mina:
+        type: integer
+        format: int32
+      nopro:
+        type: boolean
+      showd:
+        type: boolean
+      uemail:
+        type: string
+    title: ProfileUpdateRestInput
+  UserRestOutput:
+    type: object
+    properties:
+      about:
+        type: string
+      createdAt:
+        type: integer
+        format: int64
+      karma:
+        type: integer
+        format: int32
+      username:
+        type: string
+    title: UserRestOutput

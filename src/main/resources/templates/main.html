@@ -1,0 +1,143 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>jeikernius</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+<center>
+    <table id="hnmain" style="border:0;width:85%; background: #f6f6ef">
+        <tr>
+            <td style="background: #ff6600">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
+                    <tr>
+                    <tr>
+                        <td style="width:18px;padding-right:4px"><a href="/">
+                            <img src="y18.gif"
+                                 width="18"
+                                 height="18"
+                                 style="border:1px white solid;"></a>
+                        </td>
+                        <td style="line-height:12pt; height:10px;"><span class="pagetop"><b class="hnname"><a
+                                href="/">Hacker News</a></b>
+                        | <a th:class="${pageName == '/newest' ? 'selected' : ''}" href="/newest">New</a>
+                            <span th:if="${user != null}">
+                                | <a th:class="${pageName == '/threads' ? 'selected' : ''}" href="/threads">Threads</a></span>
+                        | <a th:class="${pageName == '/urls' ? 'selected' : ''}"
+                             href="/urls">Urls</a>
+                        | <a th:class="${pageName == '/ask' ? 'selected' : ''}" href="/ask">Ask</a>
+                        | <a href="/create">Submit</a>
+                        <span th:if="${submissionsUsername!=null && pageName == '/submissions'}">
+                            | <a class="selected" th:text="${submissionsUsername}+' submissions'"></a>
+                        </span>
+                        <td style="text-align: right; padding-right: 4px" ;><font color="black">
+                         <span th:if="${user != null}">
+                                <a th:href="'/user?id=' + ${user.getId()} "> <font
+                                        color="black" th:text="${user.getUsername()}"></font></a>
+                                <a th:text="'(' + ${user.getKarma()} + ')'"></a>
+                                | <a href="/logout"><font color="black"> Logout</font></a>
+                         </span>
+                            <a th:if="${user == null} " href="/login"> <font color="black"> Login</font></a>
+                        </font>
+                        </td>
+
+                        </span></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr th:each="contribution, i: ${contributions}">
+            <td>
+                <table border="0" cellpadding="0" cellspacing="0" class="itemlist">
+                    <tr class='athing'>
+                        <td align="right" valign="top" class="title"><span class="rank"
+                                                                           th:text="${i.index + 1 + (page *30)}"></span>
+                        </td>
+                        <td valign="top" class="votelinks">
+                            <div style="text-align: center;">
+                                <a th:if="${contribution.getCanLike() && submissionsUserId == null}"
+                                   th:href="'/user/likes?id='+${contribution.getContributionId()}+ '&goto='+${pageName}">
+                                    <div class="votearrow" title='upvote'></div>
+                                </a>
+                                <a th:if="${contribution.getCanLike() && submissionsUserId!=null}"
+                                   th:href="'/user/likes?id='+${contribution.getContributionId()}+ '&goto='+${pageName}+'?user='+${submissionsUserId}">
+                                    <div class="votearrow" title='upvote'></div>
+                                </a>
+                                <div th:if="${!contribution.getCanLike()}" class="spacer" title='upvote'></div>
+                            </div>
+                        </td>
+                        <td class="title">
+                            <a th:if="${contribution.getTitle() == null}"
+                               th:text="${contribution.getContent()}">
+                            </a>
+                            <a th:if="${contribution.getLink() != '' && contribution.getTitle() != null}"
+                               th:text="${contribution.getTitle()}"
+                               th:href="${contribution.getLink()}"
+                               class="storylink" target="_blank">
+                            </a>
+
+                            <a th:if="${contribution.getLink() !='' && contribution.getTitle() != null}"
+                               th:text="'('+${contribution.getDomainName()} + ')'"
+                               th:href="${contribution.getLink()}"
+                               style="color: #828282" target="_blank">
+                            </a>
+                            <a th:text="'ASK HN: ' +${contribution.getTitle()}"
+                               th:href="'/item?id=' + ${contribution.getContributionId()}"
+                               th:if="${contribution.getLink() == ''}">
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2"></td>
+                        <td class="subtext">
+                            <span th:text="${contribution.getPoints()} + ' points'" class="score"></span> by
+                            <a th:href="'/user?id=' + ${contribution.getUserId()}"
+                               class="hnuser" th:text="${contribution.getUsername()}"></a>
+                            <span th:text="${contribution.getTimeText()}" class="age"></span>
+                            <span>
+                                | <a
+                                    th:if="${contributionsComments.get(contribution.getContributionId()) == 0}"
+                                    th:text="'discuss'"
+                                    th:href="'/item?id=' + ${contribution.getContributionId()}"></a>
+                                <a th:if="${contributionsComments.get(contribution.getContributionId()) != 0}"
+                                   th:text="${contributionsComments.get(contribution.getContributionId())} + ' comments'"
+                                   th:href="'/item?id=' + ${contribution.getContributionId()}"></a>
+                            </span>
+                            |
+                            <a th:if="${!contribution.getCanLike() && submissionsUserId==null} "
+                               th:href="'/user/unlikes?id='+${contribution.getContributionId()}+ '&goto='+${pageName}"
+                               class="hnuser" th:text=" unvote"></a>
+                            <a th:if="${!contribution.getCanLike()&& submissionsUserId!=null} "
+                               th:href="'/user/unlikes?id='+${contribution.getContributionId()}+ '&goto='+${pageName}+'?user='+${submissionsUserId}"
+                               class="hnuser" th:text=" unvote"></a>
+                    </tr>
+                    <tr class="spacer" style="height:5px"></tr>
+                </table>
+            </td>
+        </tr>
+        <td>
+            <a th:if="${page != 0}" th:href="${pageName}+'?page=' + ${page -1}">Previous</a>
+            <a th:if="${contributions.size() == 30}" th:href="${pageName}+'?page=' + ${page +1}">More</a>
+        </td>
+
+    </table>
+</center>
+
+<script>
+    if (window.location.hash == '#_=_') {
+        history.replaceState
+            ? history.replaceState(null, null, window.location.href.split('#')[0])
+            : window.location.hash = ''
+    }
+    $.get('/user', function (data) {
+        $('#user').html(data.userAuthentication.details.name)
+        $('.unauthenticated').hide()
+        $('.authenticated').show()
+    })
+
+</script>
+
+</body>
+</html>
+

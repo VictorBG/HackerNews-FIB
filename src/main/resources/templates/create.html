@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Create new post</title>
+  <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+<center>
+  <table id="hnmain" border="0" cellpadding="0" cellspacing="0" width="85%" bgcolor="#f6f6ef">
+    <tr>
+      <td bgcolor="#ff6600">
+        <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
+          <tr>
+            <td style="line-height:12pt; height:10px;"><span
+                class="pagetop"><b>Create post</b></span></td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+    <tr style="height:10px"></tr>
+    <tr th:if="${errorText != null}">
+      <td><span style="margin-left:10px" th:text="${errorText}"></span></td>
+    </tr>
+    <tr>
+      <td>
+        <form method="post" action="/create" th:object="${contributionForm}">
+          <table>
+            <tr>
+              <td>title</td>
+              <td><label>
+                <input type="text"
+                       name="title"
+                       value=""
+                       size="50">
+              </label>
+              </td>
+            </tr>
+            <tr>
+              <td>url</td>
+              <td><input type="text" name="url" value="" size="50"></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><b>or</b></td>
+            </tr>
+            <tr>
+              <td>text</td>
+              <td><label>
+                <textarea name="text" rows="4" cols="49"></textarea>
+              </label></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td></td>
+              <td><input type="submit" value="submit"></td>
+            </tr>
+            <tr style="height:20px"></tr>
+            <tr>
+              <td></td>
+              <td>Leave url blank to submit a question for discussion. If there
+                is no url, the text (if any) will appear at the top of the
+                thread.<br><br>
+              </td>
+            </tr>
+          </table>
+        </form>
+      </td>
+    </tr>
+  </table>
+</center>
+</body>
+</html>
+

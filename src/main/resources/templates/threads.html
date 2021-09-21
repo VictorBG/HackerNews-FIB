@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html op="threads" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <title>My comments</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <link rel="stylesheet" type="text/css" href="main.css">
+</head>
+<body>
+<center>
+    <table id="hamain" style="border:0;width:85%; background: #f6f6ef">
+        <tr>
+            <td style="background: #ff6600">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%" style="padding:2px">
+                    <tr>
+                    <tr>
+                        <td style="width:18px;padding-right:4px"><a href="/">
+                            <img src="y18.gif"
+                                 width="18"
+                                 height="18"
+                                 style="border:1px white solid;"></a>
+                        </td>
+                        <td style="line-height:12pt; height:10px;"><span class="pagetop"><b class="hnname"><a
+                                href="/">Hacker News</a></b>
+                        | <a href="/newest">New</a>
+                        | <a class="selected">Threads</a>
+                        | <a href="/urls">Urls</a>
+                        | <a href="/ask">Ask</a>
+                        | <a href="/create">Submit</a>
+                        <td style="text-align: right; padding-right: 4px" ;><font color="black">
+                         <span th:if="${user != null}">
+                                <a th:href="'/user?id=' + ${user.getId()} "> <font
+                                        color="black" th:text="${user.getUsername()}"></font></a>
+                                <a th:text="'(' + ${user.getKarma()} + ')'"></a>
+                                | <a href="/logout"><font color="black"> Logout</font></a>
+                         </span>
+                            <a th:if="${user == null} " href="/login"> <font color="black"> Login</font></a>
+                        </font>
+                        </td>
+
+                        </span></td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr th:each="comment, i: ${contributions}">
+            <td>
+                <table border="0" cellpadding="0" cellspacing="0" class="itemlist">
+                    <td class="default">
+                        <div style="margin-top:2px; margin-bottom:-10px;">
+                            <span class="comhead">
+                                  <span th:text="${comment.getPoints()} + ' points'"
+                                        class="score"></span> by
+                                        <a class="hnuser"
+                                           th:href="'user?id=' + ${comment.getUserId()}"
+                                           th:text="${comment.getUsername()}"></a>
+                                        <span class="age">
+                                        <a th:href="'item?id=' + ${comment.getContributionId()}"
+                                           th:text="${comment.getTimeText()}"></a></span> |
+                                        <a th:href="'item?id=' + ${comment.getContributionIdRef()}"
+                                           th:text="parent "></a> | on:
+                                        <a th:href="'item?id=' + ${comment.getContributionTopParentId()}"
+                                           th:text="${comment.getContributionTopParentTitle()}"></a>
+                            </span>
+                        </div>
+                        <br>
+                        <div class="comment">
+                        <span class="commtext c00">
+                            <p th:text="${comment.getContent()}"></p>
+															</span>
+                        </div>
+                    </td>
+
+                </table>
+            </td>
+        </tr>
+    </table>
+    </table>
+
+</center>
+</body>
+</html>

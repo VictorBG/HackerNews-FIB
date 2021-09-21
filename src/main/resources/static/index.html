@@ -1,0 +1,24 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <title>Getting Started: Serving Web Content</title>
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+</head>
+<body>
+<p>Get your greeting <a href="/greeting">here</a></p>
+
+<script>
+  if (window.location.hash == '#_=_') {
+    history.replaceState
+        ? history.replaceState(null, null, window.location.href.split('#')[0])
+        : window.location.hash = '';
+  }
+  $.get("/user", function (data) {
+    $("#user").html(data.userAuthentication.details.name);
+    $(".unauthenticated").hide()
+    $(".authenticated").show()
+  });
+</script>
+
+</body>
+</html>
